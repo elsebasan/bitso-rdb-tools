@@ -14,15 +14,7 @@ jobs:
           matrix:
               targets:
                   [
-                      "linux-x64",
-                      "linux-musl-x64",
-                      "linux-arm",
-                      "linux-arm64",
-                      "osx-x64",
-                      "osx-arm64",
-                      "win-x86",
-                      "win-x64",
-                      "win-arm64"
+                      "linux-musl-x64"
                   ]
       steps:
         - name: Checkout
@@ -48,51 +40,51 @@ jobs:
               ls /home/runner/work/clis/
               zip -j /home/runner/work/release/rdb-cli.$VERSION.$RID.zip /home/runner/work/clis/$RID/*
         - name: Upload artifacts
-          uses: actions/upload-artifact@v3
+          uses: actions/upload-artifact@v4
           with:
               name: rdb-cli
               path: /home/runner/work/release/
 
 
-    publish_cli_os_low_dependency:
-      name: Build and upload cli artifact
-      runs-on: ubuntu-latest    
-      strategy:
-          matrix:
-              targets:
-                  [
-                      "linux-x64", 
-                      "osx-x64",                  
-                      "win-x64"
-                  ]
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v4
+#    publish_cli_os_low_dependency:
+#      name: Build and upload cli artifact
+#      runs-on: ubuntu-latest    
+#      strategy:
+#          matrix:
+#              targets:
+#                  [
+#                      "linux-x64", 
+#                      "osx-x64",                  
+#                      "win-x64"
+#                  ]
+#      steps:
+#        - name: Checkout
+#          uses: actions/checkout@v4
 
-        - name: Setup .NET SDK 7.0.x
-          uses: actions/setup-dotnet@v4
-          with:
-            dotnet-version: 7.0.x
+#        - name: Setup .NET SDK 7.0.x
+#          uses: actions/setup-dotnet@v4
+#          with:
+#            dotnet-version: 7.0.x
 
-        - name: Publish .NET app
-          env:
-              RID: ${{ matrix.targets }}
-              VERSION: ${{ github.ref_name }}
-          run: dotnet publish src/RDBCli/RDBCli.csproj -f net7.0 -c Release -r $RID -p:PublishSingleFile=true -p:PublishTrimmed=true -p:DebugType=None -p:DebugSymbols=false -p:EnableCompressionInSingleFile=true --self-contained true --output /home/runner/work/clis/$RID
+#        - name: Publish .NET app
+#          env:
+#              RID: ${{ matrix.targets }}
+#              VERSION: ${{ github.ref_name }}
+#          run: dotnet publish src/RDBCli/RDBCli.csproj -f net7.0 -c Release -r $RID -p:PublishSingleFile=true -p:PublishTrimmed=true -p:DebugType=None -p:DebugSymbols=false -p:EnableCompressionInSingleFile=true --self-contained true --output /home/runner/work/clis/$RID
 
-        - name: Package assets
-          env:
-              RID: ${{ matrix.targets }}
-              VERSION: ${{ github.ref_name }}
-          run: |
-              mkdir /home/runner/work/release
-              ls /home/runner/work/clis/
-              zip -j /home/runner/work/release/rdb-cli.$VERSION.$RID_70.zip /home/runner/work/clis/$RID/*
-        - name: Upload artifacts
-          uses: actions/upload-artifact@v3
-          with:
-              name: rdb-cli
-              path: /home/runner/work/release/
+#        - name: Package assets
+#          env:
+#              RID: ${{ matrix.targets }}
+#              VERSION: ${{ github.ref_name }}
+#          run: |
+#              mkdir /home/runner/work/release
+#              ls /home/runner/work/clis/
+#              zip -j /home/runner/work/release/rdb-cli.$VERSION.$RID_70.zip /home/runner/work/clis/$RID/*
+#        - name: Upload artifacts
+#          uses: actions/upload-artifact@v4
+#          with:
+#              name: rdb-cli
+#              path: /home/runner/work/release/
 
 
     # publish_windows_x64_and_arm_aot:
@@ -130,7 +122,7 @@ jobs:
     #           ls ../publish/
     #           Compress-Archive -Path ../publish/$($env:RID)/* -DestinationPath ../release/rdb-cli.$($env:VERSION).$($env:RID).aot.zip
     #     - name: Upload artifacts
-    #       uses: actions/upload-artifact@v3
+    #       uses: actions/upload-artifact@v4
     #       with:
     #           name: rdb-cli
     #           path: D:/a/rdb-tools/release
@@ -143,7 +135,7 @@ jobs:
     
         steps:          
           - name: Download build artifacts
-            uses: actions/download-artifact@v3
+            uses: actions/download-artifact@v4
             with:
               name: rdb-cli
               path: rdb-cli
